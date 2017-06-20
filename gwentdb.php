@@ -29,7 +29,7 @@ add_action('admin_enqueue_scripts', 'gwentdb_enqueue_admin_scripts');
 add_action('wp_enqueue_scripts', 'gwentdb_enqueue_scripts');
 
 /**
- * Enqueue new styles for admin pages.
+ * Enqueue new styles.
  */
 add_action('admin_enqueue_scripts', 'gwentdb_enqueue_admin_styles');
 add_action('wp_enqueue_scripts', 'gwentdb_enqueue_styles');
