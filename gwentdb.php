@@ -192,25 +192,79 @@ function gwentdb_plugin_settings_page() {
     return;
   }
 
-  echo '<div class="wrap">';
-  echo '<h2>' . esc_html(get_admin_page_title()) . '</h2>';
-  echo '<form method="post" action="options.php">';
+  gwentdb_get_template('plugin-settings-page.php');
+}
 
-  // Output security fields for the registered setting.
-  settings_fields('gwentdb-plugin-settings-group');
+/**
+ * Get template.
+ *
+ * Search for the template and include the file.
+ *
+ * @param string $template_name
+ *    Template to load.
+ * @param array $args
+ *    Args passed for the template file.
+ * @param string $template_path
+ *    Path to templates.
+ * @param string $default_path
+ *    Default path to template files.
+ */
+function gwentdb_get_template($template_name, $args = array(), $template_path = '', $default_path = '') {
+  if (is_array($args) && isset($args)) {
+    extract($args);
+  }
 
-  echo '<fieldset style="border:1px solid #000000;padding:15px;">';
-  echo '<legend>' . __('REST API settings') . '</legend>';
-  echo '<table class="form-table">';
-  echo '<tr valign="top">';
-  echo '<th style="padding:5px;">' . __('API Key') . '</th>';
-  echo '<td style="padding:5px;"><input type="text" name="gwentdb_api_key" value="' . esc_attr(get_option('gwentdb_api_key')) . '" size="30" /></td>';
-  echo '</tr>';
-  echo '</table>';
-  echo '</fieldset>';
+  $template_file = gwentdb_locate_template($template_name, $template_path, $default_path);
 
-  submit_button();
+  if (!file_exists($template_file)) {
+    // @todo error message?
+    return;
+  }
 
-  echo '</form>';
-  echo '</div>';
+  include $template_file;
+}
+
+/**
+ * Locate template.
+ *
+ * Locate the called template.
+ * Search Order:
+ * 1. /themes/theme/gwentdb/$template_name
+ * 2. /themes/theme/$template_name
+ * 3. /plugins/gwentdb/templates/$template_name.
+ *
+ * @param string $template_name
+ *    Template to load.
+ * @param string $template_path
+ *    Path to templates.
+ * @param string $default_path
+ *    Default path to template files.
+ *
+ * @return string
+ *    Path to the template file.
+ */
+function gwentdb_locate_template($template_name, $template_path = '', $default_path = '') {
+  // Set variable to search in gwentdb folder of theme.
+  if (!$template_path) {
+    $template_path = 'gwentdb/';
+  }
+
+  // Set default plugin templates path.
+  if (!$default_path) {
+    // Path to the template folder.
+    $default_path = plugin_dir_path(__FILE__) . 'templates/';
+  }
+
+  // Search template file in theme folder.
+  $template = locate_template(array(
+    $template_path . $template_name,
+    $template_name
+  ));
+
+  // Get plugins template file.
+  if (!$template) {
+    $template = $default_path . $template_name;
+  }
+
+  return apply_filters('gwentdb_locate_template', $template, $template_name, $template_path, $default_path);
 }

@@ -41,6 +41,14 @@ var GwentClient = {
     }).done(function (response) {
       if (response.message == 'OK') {
         callback(response.data);
+      } else {
+        GwentClient.container.html(response.message);
+      }
+    }).error(function (request, status, error) {
+      if (request['responseJSON']['message']) {
+        GwentClient.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
+      } else {
+        GwentClient.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
       }
     });
   };
@@ -67,6 +75,12 @@ var GwentClient = {
       if (response.message == 'OK') {
         callback(response.data);
       }
+    }).error(function (request, status, error) {
+      if (request['responseJSON']['message']) {
+        GwentClient.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
+      } else {
+        GwentClient.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
+      }
     });
   };
 
@@ -75,8 +89,6 @@ var GwentClient = {
    *
    * @param {Array} data
    *    Array contains card data. Each item is a Gwent card.
-   *
-   * @todo remove inline styles, use css file instead.
    */
   GwentClient.listBuilder = function (data) {
     var $list = $('<ul></ul>');
@@ -87,21 +99,15 @@ var GwentClient = {
       var $image = $('<img/>');
       var $name = $('<p></p>');
 
-      $item.attr('style', 'display: block; float: left; width: 140px; overflow: hidden;');
-
       $link.attr('href', 'javascript:void(0);');
       $link.attr('data-hash', card['hash']);
+
       $link.on('click', function () {
         var $this = $(this);
         var hash = $this.data('hash');
 
-        $('.card-thumbnail')
-          .removeClass('selected-card')
-          .css('background-color', '#cccccc');
-
-        $this.find('.card-thumbnail')
-          .addClass('selected-card')
-          .css('background-color', '#dcb000');
+        $('.card-thumbnail').removeClass('selected-card');
+        $this.find('.card-thumbnail').addClass('selected-card');
 
         $.each(GwentClient.data, function (key, item) {
           if (item['hash'] == hash) {
@@ -111,12 +117,10 @@ var GwentClient = {
       });
 
       $name.html(card['name']);
-      $name.attr('style', 'display: block; text-align: center; font-size: 12px;');
 
       $image.addClass('card-thumbnail');
       $image.attr('src', card['variations'][0]['art']['mini']);
       $image.attr('width', '100');
-      $image.attr('style', 'width: 100px; height: 123px; display: block; margin-left: auto; margin-right: auto; text-align: center; padding: 0 5px 5px 0; background-color: #cccccc;');
 
       $image.appendTo($link);
       $name.appendTo($link);
@@ -196,7 +200,7 @@ var GwentClient = {
     var version = GwentClient.selected.version;
 
     // Insert content when the window form is submitted.
-    editor.insertContent('<a href="#" class="gwentdb-card-tooltip-link" data-version="' + version + '" data-card="' + card.hash + '" data-language="' + lang + '">' + card.name + '<div class="gwentdb-card-tooltip"></div></a>');
+    editor.insertContent('<a href="#" class="gwentdb-card-tooltip-link" data-version="' + version + '" data-card="' + card.hash + '" data-language="' + lang + '">' + card.name + '</a>');
   };
 
   /**

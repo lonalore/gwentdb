@@ -16,5 +16,46 @@ i.mce-i-gwentdb:before {
 
 #gwent-cards-container {
   width: 100%;
-  max-width: 800px;
+}
+
+#gwent-cards-container .error-message {
+  text-align: center;
+  margin: 15px;
+}
+
+#gwent-cards-container ul {
+
+}
+
+#gwent-cards-container ul li {
+  display: block;
+  float: left;
+  min-width: 145px;
+  overflow: hidden;
+}
+
+#gwent-cards-container ul li a .card-thumbnail {
+  background-color: #cccccc;
+}
+
+#gwent-cards-container ul li a .card-thumbnail.selected-card {
+  background-color: #dcb000;
+}
+
+#gwent-cards-container ul li a p {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  padding: 5px 0 10px 0;
+}
+
+#gwent-cards-container ul li a img {
+  width: 100px;
+  height: 123px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding: 0 5px 5px 0;
+  background-color: #cccccc;
 }
