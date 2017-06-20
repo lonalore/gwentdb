@@ -1,5 +1,5 @@
 .gwentdb-card-tooltip-link {
-
+  position: relative;
 }
 
 .gwentdb-card-tooltip-link > .gwentdb-card-tooltip {
@@ -10,15 +10,25 @@
   display: block;
 }
 
+.gwentdb-card-tooltip {
+  max-width: 170px;
+  position: absolute;
+  top: -85px;
+  right: -170px;
+}
+
 .gwentdb-card-tooltip img {
   width: 100%;
+  max-width: 170px;
   margin-left: -20px;
   -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.37));
+  box-shadow: 0 0 0 0 transparent !important;
+  -webkit-box-shadow: 0 0 0 0 transparent !important;
 }
 
 .gwentdb-card-tooltip .text {
-  padding: 12px;
-  margin: -22px auto 0 auto;
+  padding: 10px;
+  margin: 5px auto 0 auto;
   background: #FFF;
   border-radius: 2px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.37);
@@ -26,10 +36,10 @@
 }
 
 .gwentdb-card-tooltip .name {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .gwentdb-card-tooltip .info {
-  font-size: 12px;
-  margin-top: 4px
+  font-size: 11px;
+  margin-top: 4px;
 }

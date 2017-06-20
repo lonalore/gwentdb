@@ -1,6 +1,6 @@
 var GwentConfig = GwentConfig || {apiKey: '', language: ''};
 
-var GwentClient = {
+var GwentTinyMCE = {
   config: {
     endpoint: 'https://www.gwentdb.hu/api/v1',
     language: GwentConfig.language,
@@ -28,27 +28,27 @@ var GwentClient = {
    * @param {function} callback
    *    On-success callback function.
    */
-  GwentClient.getVersions = function (callback) {
-    var endpoint = GwentClient.config.endpoint;
-    var language = GwentClient.config.language;
+  GwentTinyMCE.getVersions = function (callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
 
     $.ajax({
       url: endpoint + '/versions?_format=json&language=' + language,
       type: "GET",
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('API-Key', GwentClient.config.apiKey);
+        xhr.setRequestHeader('API-Key', GwentTinyMCE.config.apiKey);
       }
     }).done(function (response) {
       if (response.message == 'OK') {
         callback(response.data);
       } else {
-        GwentClient.container.html(response.message);
+        GwentTinyMCE.container.html(response.message);
       }
     }).error(function (request, status, error) {
       if (request['responseJSON']['message']) {
-        GwentClient.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
+        GwentTinyMCE.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
       } else {
-        GwentClient.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
+        GwentTinyMCE.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
       }
     });
   };
@@ -61,15 +61,15 @@ var GwentClient = {
    * @param {function} callback
    *    On-success callback function.
    */
-  GwentClient.getCardsByVersion = function (version, callback) {
-    var endpoint = GwentClient.config.endpoint;
-    var language = GwentClient.config.language;
+  GwentTinyMCE.getCardsByVersion = function (version, callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
 
     $.ajax({
       url: endpoint + '/' + version + '/cards?_format=json&language=' + language,
       type: "GET",
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('API-Key', GwentClient.config.apiKey);
+        xhr.setRequestHeader('API-Key', GwentTinyMCE.config.apiKey);
       }
     }).done(function (response) {
       if (response.message == 'OK') {
@@ -77,9 +77,9 @@ var GwentClient = {
       }
     }).error(function (request, status, error) {
       if (request['responseJSON']['message']) {
-        GwentClient.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
+        GwentTinyMCE.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
       } else {
-        GwentClient.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
+        GwentTinyMCE.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
       }
     });
   };
@@ -90,7 +90,7 @@ var GwentClient = {
    * @param {Array} data
    *    Array contains card data. Each item is a Gwent card.
    */
-  GwentClient.listBuilder = function (data) {
+  GwentTinyMCE.listBuilder = function (data) {
     var $list = $('<ul></ul>');
 
     $.each(data, function (index, card) {
@@ -109,9 +109,9 @@ var GwentClient = {
         $('.card-thumbnail').removeClass('selected-card');
         $this.find('.card-thumbnail').addClass('selected-card');
 
-        $.each(GwentClient.data, function (key, item) {
+        $.each(GwentTinyMCE.data, function (key, item) {
           if (item['hash'] == hash) {
-            GwentClient.selected.card = item;
+            GwentTinyMCE.selected.card = item;
           }
         });
       });
@@ -128,9 +128,9 @@ var GwentClient = {
       $item.appendTo($list);
     });
 
-    GwentClient.container.attr('style', 'max-height: 500px; overflow: auto;');
+    GwentTinyMCE.container.attr('style', 'max-height: 500px; overflow: auto;');
 
-    $list.appendTo(GwentClient.container);
+    $list.appendTo(GwentTinyMCE.container);
   };
 
   /**
@@ -139,18 +139,18 @@ var GwentClient = {
    * @param {object} field
    *    Field element.
    */
-  GwentClient.fieldVersionOnSelectCallback = function (field) {
+  GwentTinyMCE.fieldVersionOnSelectCallback = function (field) {
     // Update selected version.
-    GwentClient.selected.version = field.value();
+    GwentTinyMCE.selected.version = field.value();
     // Empty container.
-    GwentClient.container.html('');
+    GwentTinyMCE.container.html('');
 
     // Retrieve cards.
-    GwentClient.getCardsByVersion(GwentClient.selected.version, function (data) {
+    GwentTinyMCE.getCardsByVersion(GwentTinyMCE.selected.version, function (data) {
       // Update local card storage.
-      GwentClient.data = data;
+      GwentTinyMCE.data = data;
       // Update card list.
-      GwentClient.listBuilder(GwentClient.data);
+      GwentTinyMCE.listBuilder(GwentTinyMCE.data);
     });
   };
 
@@ -160,9 +160,9 @@ var GwentClient = {
    * @param {object} field
    *    Field element.
    */
-  GwentClient.fieldVersionOnPostRenderCallback = function (field) {
+  GwentTinyMCE.fieldVersionOnPostRenderCallback = function (field) {
     // Retrieve available versions.
-    GwentClient.getVersions(function (data) {
+    GwentTinyMCE.getVersions(function (data) {
       $.each(data, function (index, version) {
         field['_values'].push({
           text: version,
@@ -172,18 +172,18 @@ var GwentClient = {
     });
 
     // Select the 'latest' item by default.
-    field.value(GwentClient.selected.version);
+    field.value(GwentTinyMCE.selected.version);
 
     // Retrieve cards.
-    GwentClient.getCardsByVersion(GwentClient.selected.version, function (data) {
+    GwentTinyMCE.getCardsByVersion(GwentTinyMCE.selected.version, function (data) {
       // Update local card storage.
-      GwentClient.data = data;
+      GwentTinyMCE.data = data;
       // Update card list.
-      GwentClient.listBuilder(GwentClient.data);
+      GwentTinyMCE.listBuilder(GwentTinyMCE.data);
     });
 
     // Store card container for later use.
-    GwentClient.container = $('#gwent-cards-container');
+    GwentTinyMCE.container = $('#gwent-cards-container');
   };
 
   /**
@@ -194,10 +194,10 @@ var GwentClient = {
    * @param {object} editor
    *    TinyMCE editor object.
    */
-  GwentClient.windowManagerOnSubmitCallback = function (windowManager, editor) {
-    var lang = GwentClient.config.language;
-    var card = GwentClient.selected.card;
-    var version = GwentClient.selected.version;
+  GwentTinyMCE.windowManagerOnSubmitCallback = function (windowManager, editor) {
+    var lang = GwentTinyMCE.config.language;
+    var card = GwentTinyMCE.selected.card;
+    var version = GwentTinyMCE.selected.version;
 
     // Insert content when the window form is submitted.
     editor.insertContent('<a href="#" class="gwentdb-card-tooltip-link" data-version="' + version + '" data-card="' + card.hash + '" data-language="' + lang + '">' + card.name + '</a>');
@@ -213,8 +213,8 @@ var GwentClient = {
       icon: 'gwentdb',
       tooltip: "GwentDB",
       onclick: function () {
-        GwentClient.popup = editor.windowManager;
-        GwentClient.popup.open({
+        GwentTinyMCE.popup = editor.windowManager;
+        GwentTinyMCE.popup.open({
           width: 960,
           height: 600,
           title: 'GwentDB',
@@ -225,10 +225,10 @@ var GwentClient = {
               label: 'Select a version',
               values: [{text: 'Latest', value: 'latest'}],
               onselect: function () {
-                GwentClient.fieldVersionOnSelectCallback(this);
+                GwentTinyMCE.fieldVersionOnSelectCallback(this);
               },
               onPostRender: function () {
-                GwentClient.fieldVersionOnPostRenderCallback(this);
+                GwentTinyMCE.fieldVersionOnPostRenderCallback(this);
               }
             },
             {
@@ -238,7 +238,7 @@ var GwentClient = {
             }
           ],
           onsubmit: function () {
-            GwentClient.windowManagerOnSubmitCallback(this, editor);
+            GwentTinyMCE.windowManagerOnSubmitCallback(this, editor);
           }
         });
       }

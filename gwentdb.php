@@ -69,7 +69,7 @@ add_filter('mce_css', 'gwentdb_mce_register_stylesheet');
  * Callback function to enqueue new scripts for admin pages.
  */
 function gwentdb_enqueue_admin_scripts() {
-  wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__));
+  wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__), array('jquery'));
 
   $locale = get_locale();
   $locale_iso = substr($locale, 0, 2);
@@ -91,7 +91,7 @@ function gwentdb_enqueue_admin_scripts() {
  * Callback function to enqueue new scripts for frontend pages.
  */
 function gwentdb_enqueue_scripts() {
-  wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__));
+  wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__), array('jquery'));
 
   $locale = get_locale();
   $locale_iso = substr($locale, 0, 2);
