@@ -1,0 +1,35 @@
+.gwentdb-card-tooltip-link {
+
+}
+
+.gwentdb-card-tooltip-link > .gwentdb-card-tooltip {
+  display: none;
+}
+
+.gwentdb-card-tooltip-link:hover > .gwentdb-card-tooltip {
+  display: block;
+}
+
+.gwentdb-card-tooltip img {
+  width: 100%;
+  margin-left: -20px;
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.37));
+}
+
+.gwentdb-card-tooltip .text {
+  padding: 12px;
+  margin: -22px auto 0 auto;
+  background: #FFF;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.37);
+  width: 170px;
+}
+
+.gwentdb-card-tooltip .name {
+  font-size: 16px;
+}
+
+.gwentdb-card-tooltip .info {
+  font-size: 12px;
+  margin-top: 4px
+}
