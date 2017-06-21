@@ -1,4 +1,4 @@
-var GwentConfig = GwentConfig || {apiKey: '', language: ''};
+var GwentConfig = GwentConfig || {apiKey: '', language: '', translate: {}};
 
 var GwentClient = {
   config: {

@@ -71,17 +71,7 @@ add_filter('mce_css', 'gwentdb_mce_register_stylesheet');
 function gwentdb_enqueue_admin_scripts() {
   wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__), array('jquery'));
 
-  $locale = get_locale();
-  $locale_iso = substr($locale, 0, 2);
-
-  if (!in_array($locale_iso, array('en', 'hu'))) {
-    $locale_iso = 'en';
-  }
-
-  $options = array(
-    'apiKey'   => get_option('gwentdb_api_key'),
-    'language' => $locale_iso,
-  );
+  $options = gwentdb_get_javascript_settings();
 
   wp_localize_script('gwentdb', 'GwentConfig', $options);
   wp_enqueue_script('gwentdb');
@@ -93,6 +83,18 @@ function gwentdb_enqueue_admin_scripts() {
 function gwentdb_enqueue_scripts() {
   wp_register_script('gwentdb', plugins_url('/js/gwentdb.cards.js', __FILE__), array('jquery'));
 
+  $options = gwentdb_get_javascript_settings();
+
+  wp_localize_script('gwentdb', 'GwentConfig', $options);
+  wp_enqueue_script('gwentdb');
+}
+
+/**
+ * Helper function to build settings array will be exposed for javascript.
+ *
+ * @return array
+ */
+function gwentdb_get_javascript_settings() {
   $locale = get_locale();
   $locale_iso = substr($locale, 0, 2);
 
@@ -101,12 +103,15 @@ function gwentdb_enqueue_scripts() {
   }
 
   $options = array(
-    'apiKey'   => get_option('gwentdb_api_key'),
-    'language' => $locale_iso,
+    'apiKey'    => get_option('gwentdb_api_key'),
+    'language'  => $locale_iso,
+    'translate' => array(
+      'Version' => __('Version'),
+      'Latest'  => __('Latest'),
+    ),
   );
 
-  wp_localize_script('gwentdb', 'GwentConfig', $options);
-  wp_enqueue_script('gwentdb');
+  return $options;
 }
 
 /**

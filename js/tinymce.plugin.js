@@ -1,4 +1,4 @@
-var GwentConfig = GwentConfig || {apiKey: '', language: ''};
+var GwentConfig = GwentConfig || {apiKey: '', language: '', translate: {}};
 
 var GwentTinyMCE = {
   config: {
@@ -6,6 +6,7 @@ var GwentTinyMCE = {
     language: GwentConfig.language,
     apiKey: GwentConfig.apiKey
   },
+  spinner: '<div class="gwent-loading-spinner"><div class="dot1"></div><div class="dot2"></div></div>',
   // TinyMCE windowManager.
   popup: null,
   // Container for card thumbnails.
@@ -41,13 +42,15 @@ var GwentTinyMCE = {
     }).done(function (response) {
       if (response.message == 'OK') {
         callback(response.data);
-      } else {
+      }
+      else {
         GwentTinyMCE.container.html(response.message);
       }
     }).error(function (request, status, error) {
       if (request['responseJSON']['message']) {
         GwentTinyMCE.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
-      } else {
+      }
+      else {
         GwentTinyMCE.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
       }
     });
@@ -78,7 +81,8 @@ var GwentTinyMCE = {
     }).error(function (request, status, error) {
       if (request['responseJSON']['message']) {
         GwentTinyMCE.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
-      } else {
+      }
+      else {
         GwentTinyMCE.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
       }
     });
@@ -129,8 +133,7 @@ var GwentTinyMCE = {
     });
 
     GwentTinyMCE.container.attr('style', 'max-height: 500px; overflow: auto;');
-
-    $list.appendTo(GwentTinyMCE.container);
+    GwentTinyMCE.container.html($list);
   };
 
   /**
@@ -143,7 +146,7 @@ var GwentTinyMCE = {
     // Update selected version.
     GwentTinyMCE.selected.version = field.value();
     // Empty container.
-    GwentTinyMCE.container.html('');
+    GwentTinyMCE.container.html(GwentTinyMCE.spinner);
 
     // Retrieve cards.
     GwentTinyMCE.getCardsByVersion(GwentTinyMCE.selected.version, function (data) {
@@ -161,6 +164,11 @@ var GwentTinyMCE = {
    *    Field element.
    */
   GwentTinyMCE.fieldVersionOnPostRenderCallback = function (field) {
+    // Store card container for later use.
+    GwentTinyMCE.container = $('#gwent-cards-container');
+
+    GwentTinyMCE.container.html(GwentTinyMCE.spinner);
+
     // Retrieve available versions.
     GwentTinyMCE.getVersions(function (data) {
       $.each(data, function (index, version) {
@@ -181,9 +189,6 @@ var GwentTinyMCE = {
       // Update card list.
       GwentTinyMCE.listBuilder(GwentTinyMCE.data);
     });
-
-    // Store card container for later use.
-    GwentTinyMCE.container = $('#gwent-cards-container');
   };
 
   /**
@@ -221,9 +226,13 @@ var GwentTinyMCE = {
           body: [
             {
               type: 'listbox',
-              text: 'Version',
-              label: 'Select a version',
-              values: [{text: 'Latest', value: 'latest'}],
+              text: GwentConfig.translate['Version'],
+              values: [
+                {
+                  text: GwentConfig.translate['Latest'],
+                  value: 'latest'
+                }
+              ],
               onselect: function () {
                 GwentTinyMCE.fieldVersionOnSelectCallback(this);
               },
