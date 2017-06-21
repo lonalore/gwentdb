@@ -13,8 +13,8 @@
 .gwentdb-card-tooltip {
   max-width: 170px;
   position: absolute;
-  top: -85px;
-  right: -170px;
+  top: -45px;
+  right: -185px;
 }
 
 .gwentdb-card-tooltip img {
