@@ -3,7 +3,9 @@ GwentDB
 
 WordPress plugin - Display tooltips for Gwent Cards. This plugin uses the REST API provided by **gwentdb.hu** website.
 
-> Attention! The API provided by gwentdb.hu is a private API! Please contact the Administrator of **gwentdb.hu** first.
+> Attention! The API provided by **gwentdb.hu** is a private API! Please contact the Administrator first.
+
+> Attention! **gwentdb.hu** website is under active development!
 
 ## Installing and configuring
 
@@ -15,3 +17,8 @@ WordPress plugin - Display tooltips for Gwent Cards. This plugin uses the REST A
   - Select **API keys** menu item.
   - Create your API-Key with the domain you want to use the plugin on.
 - Goto **GwentDB settings** page, and set you API-Key.
+
+## Languages supported by the API
+
+- English
+- Hungarian
