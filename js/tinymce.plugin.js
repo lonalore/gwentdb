@@ -194,7 +194,6 @@ var GwentTinyMCE = {
 
     if (GwentTinyMCE.selected.faction != '') {
       data = data.filter(function (item) {
-        console.log(item.faction + ' == ' + GwentTinyMCE.selected.faction);
         return (item.faction == GwentTinyMCE.selected.faction);
       });
     }
