@@ -106,8 +106,13 @@ function gwentdb_get_javascript_settings() {
     'apiKey'    => get_option('gwentdb_api_key'),
     'language'  => $locale_iso,
     'translate' => array(
-      'Version' => __('Version'),
-      'Latest'  => __('Latest'),
+      'Version'       => __('Version'),
+      'Latest'        => __('Latest'),
+      'Any'           => __('Any'),
+      'Category'      => __('Category'),
+      'Faction'       => __('Faction'),
+      'Type'          => __('Type'),
+      'No results...' => __('No results...'),
     ),
   );
 

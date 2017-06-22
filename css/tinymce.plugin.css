@@ -19,8 +19,27 @@ i.mce-i-gwentdb:hover:before {
   animation: anim 10s infinite linear;
 }
 
+.mce-gwentdb-popup .mce-window-body .mce-widget {
+  width: 24%;
+  position: relative !important;
+  top: 0 !important;
+  margin: 15px 3px 15px 3px !important;
+}
+
+.mce-gwentdb-popup .mce-window-body .mce-widget button {
+  width: 100%;
+}
+
+.mce-gwentdb-popup .mce-window-body .mce-container {
+  position: relative !important;
+  top: 0 !important;
+  height: auto !important;
+  width: 100% !important;
+}
+
 #gwent-cards-container {
   width: 100%;
+  height: auto !important;
 }
 
 #gwent-cards-container .error-message {

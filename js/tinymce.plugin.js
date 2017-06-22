@@ -1,4 +1,8 @@
-var GwentConfig = GwentConfig || {apiKey: '', language: '', translate: {}};
+var GwentConfig = GwentConfig || {
+    apiKey: '',
+    language: '',
+    translate: {}
+  };
 
 var GwentTinyMCE = {
   config: {
@@ -14,6 +18,9 @@ var GwentTinyMCE = {
   // Selected items.
   selected: {
     version: 'latest',
+    category: '',
+    faction: '',
+    type: '',
     card: null
   },
   // Contains cards belong to selected version.
@@ -32,28 +39,51 @@ var GwentTinyMCE = {
   GwentTinyMCE.getVersions = function (callback) {
     var endpoint = GwentTinyMCE.config.endpoint;
     var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/versions?_format=json&language=' + language;
 
-    $.ajax({
-      url: endpoint + '/versions?_format=json&language=' + language,
-      type: "GET",
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('API-Key', GwentTinyMCE.config.apiKey);
-      }
-    }).done(function (response) {
-      if (response.message == 'OK') {
-        callback(response.data);
-      }
-      else {
-        GwentTinyMCE.container.html(response.message);
-      }
-    }).error(function (request, status, error) {
-      if (request['responseJSON']['message']) {
-        GwentTinyMCE.container.html('<p class="error-message">' + request['responseJSON']['message'] + '</p>');
-      }
-      else {
-        GwentTinyMCE.container.html('<p class="error-message">' + status + ' - ' + error + '</p>');
-      }
-    });
+    GwentTinyMCE.getRequest(url, callback);
+  };
+
+  /**
+   * Retrieves available categories.
+   *
+   * @param {function} callback
+   *    On-success callback function.
+   */
+  GwentTinyMCE.getCategories = function (callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/categories?_format=json&language=' + language;
+
+    GwentTinyMCE.getRequest(url, callback);
+  };
+
+  /**
+   * Retrieves available factions.
+   *
+   * @param {function} callback
+   *    On-success callback function.
+   */
+  GwentTinyMCE.getFactions = function (callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/factions?_format=json&language=' + language;
+
+    GwentTinyMCE.getRequest(url, callback);
+  };
+
+  /**
+   * Retrieves available types.
+   *
+   * @param {function} callback
+   *    On-success callback function.
+   */
+  GwentTinyMCE.getTypes = function (callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/types?_format=json&language=' + language;
+
+    GwentTinyMCE.getRequest(url, callback);
   };
 
   /**
@@ -67,9 +97,22 @@ var GwentTinyMCE = {
   GwentTinyMCE.getCardsByVersion = function (version, callback) {
     var endpoint = GwentTinyMCE.config.endpoint;
     var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/' + version + '/cards?_format=json&language=' + language;
 
+    GwentTinyMCE.getRequest(url, callback);
+  };
+
+  /**
+   * GET request.
+   *
+   * @param {string} url
+   *    Requested URL.
+   * @param {function} callback
+   *    On-success callback function.
+   */
+  GwentTinyMCE.getRequest = function (url, callback) {
     $.ajax({
-      url: endpoint + '/' + version + '/cards?_format=json&language=' + language,
+      url: url,
       type: "GET",
       beforeSend: function (xhr) {
         xhr.setRequestHeader('API-Key', GwentTinyMCE.config.apiKey);
@@ -136,6 +179,43 @@ var GwentTinyMCE = {
     GwentTinyMCE.container.html($list);
   };
 
+  GwentTinyMCE.filterList = function () {
+    // Clone data object in order to keep original results.
+    var data = GwentTinyMCE.data;
+
+    // Empty container.
+    GwentTinyMCE.container.html(GwentTinyMCE.spinner);
+
+    if (GwentTinyMCE.selected.category != '') {
+      data = data.filter(function (item) {
+        return ($.inArray(GwentTinyMCE.selected.category, item.category) != -1);
+      });
+    }
+
+    if (GwentTinyMCE.selected.faction != '') {
+      data = data.filter(function (item) {
+        console.log(item.faction + ' == ' + GwentTinyMCE.selected.faction);
+        return (item.faction == GwentTinyMCE.selected.faction);
+      });
+    }
+
+    if (GwentTinyMCE.selected.type != '') {
+      data = data.filter(function (item) {
+        return (item.type == GwentTinyMCE.selected.type);
+      });
+    }
+
+    if (data.length === 0) {
+      var text = GwentConfig.translate['No results...'] || 'No results...';
+      var message = '<p class="error-message">' + text + '</p>';
+
+      GwentTinyMCE.container.html(message);
+    }
+    else {
+      GwentTinyMCE.listBuilder(data);
+    }
+  };
+
   /**
    * OnSelect callback function for TinyMCE windowManager 'Version' field.
    *
@@ -192,6 +272,60 @@ var GwentTinyMCE = {
   };
 
   /**
+   * OnPostRender callback function for TinyMCE windowManager 'Category' field.
+   *
+   * @param {object} field
+   *    Field element.
+   */
+  GwentTinyMCE.fieldCategoryOnPostRenderCallback = function (field) {
+    // Retrieve available categories.
+    GwentTinyMCE.getCategories(function (data) {
+      $.each(data, function (index, category) {
+        field['_values'].push({
+          text: category,
+          value: category
+        });
+      });
+    });
+  };
+
+  /**
+   * OnPostRender callback function for TinyMCE windowManager 'Type' field.
+   *
+   * @param {object} field
+   *    Field element.
+   */
+  GwentTinyMCE.fieldTypeOnPostRenderCallback = function (field) {
+    // Retrieve available types.
+    GwentTinyMCE.getTypes(function (data) {
+      $.each(data, function (index, type) {
+        field['_values'].push({
+          text: type,
+          value: type
+        });
+      });
+    });
+  };
+
+  /**
+   * OnPostRender callback function for TinyMCE windowManager 'Faction' field.
+   *
+   * @param {object} field
+   *    Field element.
+   */
+  GwentTinyMCE.fieldFactionOnPostRenderCallback = function (field) {
+    // Retrieve available factions.
+    GwentTinyMCE.getFactions(function (data) {
+      $.each(data, function (index, faction) {
+        field['_values'].push({
+          text: faction,
+          value: faction
+        });
+      });
+    });
+  };
+
+  /**
    * OnSubmit callback function for TinyMCE windowManager.
    *
    * @param {object} windowManager
@@ -221,34 +355,96 @@ var GwentTinyMCE = {
         GwentTinyMCE.popup = editor.windowManager;
         GwentTinyMCE.popup.open({
           width: 960,
-          height: 600,
+          height: 570,
           title: 'GwentDB',
+          classes: 'gwentdb-popup',
           body: [
             {
-              type: 'listbox',
-              text: GwentConfig.translate['Version'],
-              values: [
+              type: 'container',
+              layout: 'flow',
+              items: [
                 {
-                  text: GwentConfig.translate['Latest'],
-                  value: 'latest'
+                  type: 'listbox',
+                  text: GwentConfig.translate['Version'] || 'Version',
+                  values: [
+                    {
+                      text: GwentConfig.translate['Latest'] || 'Latest',
+                      value: 'latest'
+                    }
+                  ],
+                  fixedWidth: true,
+                  onselect: function () {
+                    GwentTinyMCE.fieldVersionOnSelectCallback(this);
+                  },
+                  onPostRender: function () {
+                    GwentTinyMCE.fieldVersionOnPostRenderCallback(this);
+                  }
+                },
+                {
+                  type: 'listbox',
+                  text: GwentConfig.translate['Category'] || 'Category',
+                  values: [
+                    {
+                      text: GwentConfig.translate['Any'] || 'Any',
+                      value: ''
+                    }
+                  ],
+                  fixedWidth: true,
+                  onselect: function () {
+                    GwentTinyMCE.selected.category = this.value();
+                    GwentTinyMCE.filterList();
+                  },
+                  onPostRender: function () {
+                    GwentTinyMCE.fieldCategoryOnPostRenderCallback(this);
+                  }
+                },
+                {
+                  type: 'listbox',
+                  text: GwentConfig.translate['Faction'] || 'Faction',
+                  values: [
+                    {
+                      text: GwentConfig.translate['Any'] || 'Any',
+                      value: ''
+                    }
+                  ],
+                  fixedWidth: true,
+                  onselect: function () {
+                    GwentTinyMCE.selected.faction = this.value();
+                    GwentTinyMCE.filterList();
+                  },
+                  onPostRender: function () {
+                    GwentTinyMCE.fieldFactionOnPostRenderCallback(this);
+                  }
+                },
+                {
+                  type: 'listbox',
+                  text: GwentConfig.translate['Type'] || 'Type',
+                  values: [
+                    {
+                      text: GwentConfig.translate['Any'] || 'Any',
+                      value: ''
+                    }
+                  ],
+                  fixedWidth: true,
+                  onselect: function () {
+                    GwentTinyMCE.selected.type = this.value();
+                    GwentTinyMCE.filterList();
+                  },
+                  onPostRender: function () {
+                    GwentTinyMCE.fieldTypeOnPostRenderCallback(this);
+                  }
+                },
+                {
+                  type: 'container',
+                  name: 'container',
+                  html: '<div id="gwent-cards-container"></div>'
                 }
               ],
-              onselect: function () {
-                GwentTinyMCE.fieldVersionOnSelectCallback(this);
-              },
-              onPostRender: function () {
-                GwentTinyMCE.fieldVersionOnPostRenderCallback(this);
+              onsubmit: function () {
+                GwentTinyMCE.windowManagerOnSubmitCallback(this, editor);
               }
-            },
-            {
-              type: 'container',
-              name: 'container',
-              html: '<div id="gwent-cards-container"></div>'
             }
-          ],
-          onsubmit: function () {
-            GwentTinyMCE.windowManagerOnSubmitCallback(this, editor);
-          }
+          ]
         });
       }
     });
