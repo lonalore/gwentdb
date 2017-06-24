@@ -22,3 +22,14 @@ WordPress plugin - Display tooltips for Gwent Cards. This plugin uses the REST A
 
 - English
 - Hungarian
+
+## Screenshots
+
+#### TinyMCE button
+![01](https://www.dropbox.com/s/5p5wc3fw25nzhqr/01.png?dl=1)
+
+#### TinyMCE popup windown
+![02](https://www.dropbox.com/s/xh1gyvc3kmmsgx8/02.png?dl=1)
+
+#### Gwent Card - link tooltip
+![03](https://www.dropbox.com/s/r9evekrt5kl0l4r/03.png?dl=1)
