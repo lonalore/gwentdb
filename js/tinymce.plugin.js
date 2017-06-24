@@ -438,12 +438,12 @@ var GwentTinyMCE = {
                   name: 'container',
                   html: '<div id="gwent-cards-container"></div>'
                 }
-              ],
-              onsubmit: function () {
-                GwentTinyMCE.windowManagerOnSubmitCallback(this, editor);
-              }
+              ]
             }
-          ]
+          ],
+          onsubmit: function () {
+            GwentTinyMCE.windowManagerOnSubmitCallback(this, editor);
+          }
         });
       }
     });
