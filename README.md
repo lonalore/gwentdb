@@ -7,6 +7,11 @@ WordPress plugin - Display tooltips for Gwent Cards. This plugin uses the REST A
 
 > Attention! **gwentdb.hu** website is under active development!
 
+## Requirements
+
+- WordPress 4.x with TinyMCE
+- GwentDB.hu API Key
+
 ## Installing and configuring
 
 - Download **gwentdb** plugin files into your `wp-content/plugins/gwentdb` folder.
