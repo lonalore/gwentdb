@@ -112,6 +112,7 @@ function gwentdb_get_javascript_settings() {
       'Category'      => __('Category'),
       'Faction'       => __('Faction'),
       'Type'          => __('Type'),
+      'Position'      => __('Position'),
       'No results...' => __('No results...'),
     ),
   );

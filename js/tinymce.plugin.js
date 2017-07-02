@@ -21,6 +21,7 @@ var GwentTinyMCE = {
     category: '',
     faction: '',
     type: '',
+    position: '',
     card: null
   },
   // Contains cards belong to selected version.
@@ -82,6 +83,20 @@ var GwentTinyMCE = {
     var endpoint = GwentTinyMCE.config.endpoint;
     var language = GwentTinyMCE.config.language;
     var url = endpoint + '/types?_format=json&language=' + language;
+
+    GwentTinyMCE.getRequest(url, callback);
+  };
+
+  /**
+   * Retrieves available positions.
+   *
+   * @param {function} callback
+   *    On-success callback function.
+   */
+  GwentTinyMCE.getPositions = function (callback) {
+    var endpoint = GwentTinyMCE.config.endpoint;
+    var language = GwentTinyMCE.config.language;
+    var url = endpoint + '/positions?_format=json&language=' + language;
 
     GwentTinyMCE.getRequest(url, callback);
   };
@@ -179,6 +194,9 @@ var GwentTinyMCE = {
     GwentTinyMCE.container.html($list);
   };
 
+  /**
+   * Filter cards.
+   */
   GwentTinyMCE.filterList = function () {
     // Clone data object in order to keep original results.
     var data = GwentTinyMCE.data;
@@ -201,6 +219,12 @@ var GwentTinyMCE = {
     if (GwentTinyMCE.selected.type != '') {
       data = data.filter(function (item) {
         return (item.type == GwentTinyMCE.selected.type);
+      });
+    }
+
+    if (GwentTinyMCE.selected.position != '') {
+      data = data.filter(function (item) {
+        return ($.inArray(GwentTinyMCE.selected.position, item.position) != -1);
       });
     }
 
@@ -325,6 +349,24 @@ var GwentTinyMCE = {
   };
 
   /**
+   * OnPostRender callback function for TinyMCE windowManager 'Position' field.
+   *
+   * @param {object} field
+   *    Field element.
+   */
+  GwentTinyMCE.fieldPositionOnPostRenderCallback = function (field) {
+    // Retrieve available factions.
+    GwentTinyMCE.getPositions(function (data) {
+      $.each(data, function (index, position) {
+        field['_values'].push({
+          text: position,
+          value: position
+        });
+      });
+    });
+  };
+
+  /**
    * OnSubmit callback function for TinyMCE windowManager.
    *
    * @param {object} windowManager
@@ -431,6 +473,24 @@ var GwentTinyMCE = {
                   },
                   onPostRender: function () {
                     GwentTinyMCE.fieldTypeOnPostRenderCallback(this);
+                  }
+                },
+                {
+                  type: 'listbox',
+                  text: GwentConfig.translate['Position'] || 'Position',
+                  values: [
+                    {
+                      text: GwentConfig.translate['Any'] || 'Any',
+                      value: ''
+                    }
+                  ],
+                  fixedWidth: true,
+                  onselect: function () {
+                    GwentTinyMCE.selected.position = this.value();
+                    GwentTinyMCE.filterList();
+                  },
+                  onPostRender: function () {
+                    GwentTinyMCE.fieldPositionOnPostRenderCallback(this);
                   }
                 },
                 {
