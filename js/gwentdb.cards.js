@@ -66,12 +66,16 @@ var GwentClient = {
   /**
    * Build Gwent Card Popover.
    *
+   * @param {object} event
+   *    Mouse over event.
    * @param {object} $link
    *    Link object, which was triggered.
    * @param {object} data
    *    Contains Card details.
    */
-  GwentClient.buildPopover = function ($link, data) {
+  GwentClient.buildPopover = function (event, $link, data) {
+    var $body = $('body');
+
     var $container = $('<div></div>');
     var $image = $('<img/>');
     var $text = $('<div>');
@@ -95,7 +99,13 @@ var GwentClient = {
     $image.appendTo($container);
     $text.appendTo($container);
 
-    $container.appendTo($link);
+    $container.appendTo($body);
+
+    $container.css({
+      position: 'absolute',
+      top: event.pageY,
+      left: event.pageX
+    });
   };
 
   $(document).ready(function () {
@@ -103,7 +113,7 @@ var GwentClient = {
       click: function () {
         return false;
       },
-      mouseenter: function () {
+      mouseenter: function (event) {
         var $this = $(this);
 
         var vers = $this.data('version');
@@ -111,11 +121,11 @@ var GwentClient = {
         var lang = $this.data('language');
 
         GwentClient.getCard(vers, hash, lang, function (data) {
-          GwentClient.buildPopover($this, data);
+          GwentClient.buildPopover(event, $this, data);
         });
       },
-      mouseleave: function () {
-        $(this).find('.gwentdb-card-tooltip').remove();
+      mouseleave: function (event) {
+        $('.gwentdb-card-tooltip').remove();
       }
     });
   });
