@@ -105,8 +105,8 @@ var GwentClient = {
 
     GwentClient.tooltip.css({
       position: 'absolute',
-      top: event.pageY,
-      left: event.pageX
+      top: event.pageY - (GwentClient.tooltip.height() / 2),
+      left: event.pageX + 15
     });
   };
 
@@ -131,8 +131,8 @@ var GwentClient = {
       mousemove: function (event) {
         if (GwentClient.tooltip) {
           GwentClient.tooltip.css({
-            top: event.pageY,
-            left: event.pageX
+            top: event.pageY - (GwentClient.tooltip.height() / 2),
+            left: event.pageX + 15
           });
         }
       },
