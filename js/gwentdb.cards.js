@@ -128,7 +128,7 @@ var GwentClient = {
           });
         }
       },
-      mousemove: function(event) {
+      mousemove: function (event) {
         if (GwentClient.tooltip) {
           GwentClient.tooltip.css({
             top: event.pageY,
@@ -137,7 +137,10 @@ var GwentClient = {
         }
       },
       mouseleave: function (event) {
-        GwentClient.tooltip.remove();
+        if (GwentClient.tooltip) {
+          GwentClient.tooltip.remove();
+        }
+
         GwentClient.tooltip = null;
       }
     });
