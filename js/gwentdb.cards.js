@@ -7,7 +7,8 @@ var GwentClient = {
     apiKey: GwentConfig.apiKey
   },
   // Contains cards.
-  data: {}
+  data: {},
+  tooltip: null
 };
 
 (function ($) {
@@ -99,9 +100,10 @@ var GwentClient = {
     $image.appendTo($container);
     $text.appendTo($container);
 
-    $container.appendTo($body);
+    GwentClient.tooltip = $container;
+    GwentClient.tooltip.appendTo($body);
 
-    $container.css({
+    GwentClient.tooltip.css({
       position: 'absolute',
       top: event.pageY,
       left: event.pageX
@@ -114,18 +116,29 @@ var GwentClient = {
         return false;
       },
       mouseenter: function (event) {
-        var $this = $(this);
+        if (GwentClient.tooltip === null) {
+          var $this = $(this);
 
-        var vers = $this.data('version');
-        var hash = $this.data('card');
-        var lang = $this.data('language');
+          var vers = $this.data('version');
+          var hash = $this.data('card');
+          var lang = $this.data('language');
 
-        GwentClient.getCard(vers, hash, lang, function (data) {
-          GwentClient.buildPopover(event, $this, data);
-        });
+          GwentClient.getCard(vers, hash, lang, function (data) {
+            GwentClient.buildPopover(event, $this, data);
+          });
+        }
+      },
+      mousemove: function(event) {
+        if (GwentClient.tooltip) {
+          GwentClient.tooltip.css({
+            top: event.pageY,
+            left: event.pageX
+          });
+        }
       },
       mouseleave: function (event) {
-        $('.gwentdb-card-tooltip').remove();
+        GwentClient.tooltip.remove();
+        GwentClient.tooltip = null;
       }
     });
   });

@@ -15,6 +15,7 @@
   position: absolute;
   top: -45px;
   right: -185px;
+  z-index: 9999;
 }
 
 .gwentdb-card-tooltip img {
